@@ -4,65 +4,119 @@ public class Main {
 
     public static void main(String[] args) {
 
-       Scanner scanner = new Scanner(System.in);
-       System.out.print("Введіть назву інвентарю: ");
-       String equipmentName = scanner.nextLine();
+        Scanner scanner = new Scanner(System.in);
 
-       System.out.print("Введіть категорію інвентарю: ");
-       String equipmentCategory = scanner.nextLine();
+        final int EQUIPMENT_COUNT = 5;
+        final int LOW_STOCK_LIMIT = 5;
 
-       System.out.print("Введіть кількість інвентарю: ");
-       int quantity = scanner.nextInt();
+        SportsEquipment[] equipment = new SportsEquipment[EQUIPMENT_COUNT];
 
-       System.out.print("Введіть ціну за одиницю: ");
-       double price = scanner.nextDouble();
+        // Заповнення масиву
+        for (int i = 0; i < equipment.length; i++) {
 
-       scanner.nextLine();
+            System.out.println("\n=== Інвентар №" + (i + 1) + " ===");
 
-       System.out.print("Введіть виробника: ");
-       String manufacturer = scanner.nextLine();
+            System.out.print("Введіть назву інвентарю: ");
+            String equipmentName = scanner.nextLine();
 
-       double totalCost = quantity * price;
+            System.out.print("Введіть категорію інвентарю: ");
+            String equipmentCategory = scanner.nextLine();
 
-       double discount = 0;
-       double finalCost = totalCost;
+            System.out.print("Введіть кількість інвентарю: ");
+            int quantity = scanner.nextInt();
 
-       if (totalCost >= 5000) {
-          discount = totalCost * 0.10;
-          finalCost = totalCost - discount;
-       }  
+            System.out.print("Введіть ціну за одиницю: ");
+            double price = scanner.nextDouble();
 
-       String priceCategory;
+            scanner.nextLine();
 
-       if (price <= 500) {
-           priceCategory = "Бюджетний інвентар";
-       } else if (price <= 2000) {
-           priceCategory = "Інвентар середньої цінової категорії";
-       } else {
-           priceCategory = "Дорогий інвентар";
-       }
-       
+            System.out.print("Введіть виробника: ");
+            String manufacturer = scanner.nextLine();
 
-       System.out.println("\n=== СПОРТИВНИЙ ІНВЕНТАР⚽ ===");
-       System.out.printf("Назва: %s%n", equipmentName);
-       System.out.printf("Категорія: %s%n", equipmentCategory);
-       System.out.printf("Кількість: %d%n", quantity);
-       System.out.printf("Ціна за одиницю: %.2f грн%n", price);
-       System.out.printf("Цінова категорія: %s%n", priceCategory);
-       System.out.printf("Виробник: %s%n", manufacturer);
-       System.out.printf("Загальна вартість: %.2f грн%n", totalCost);
-       System.out.printf("Знижка: %.2f грн%n", discount);
-       System.out.printf("Вартість після знижки: %.2f грн%n", finalCost);
+            equipment[i] = new SportsEquipment(
+                    equipmentName,
+                    equipmentCategory,
+                    quantity,
+                    price,
+                    manufacturer);
+        }
 
-       if (quantity == 0) {
-         System.out.println("Інвентар відсутній.");
-    } else if (quantity <= 5) {
-    System.out.println("Інвентар є в наявності, але його мало.");
-    } else {
-        System.out.println("Інвентар є в достатній кількості.");
-     }
+        // Виведення всього масиву
+        System.out.println("\n=== СПИСОК СПОРТИВНОГО ІНВЕНТАРЮ ===");
 
-       scanner.close();
+        for (SportsEquipment item : equipment) {
+            System.out.println(item);
+        }
 
+        // Підрахунок інвентарю, якого мало
+        int lowStockCount = 0;
+
+        for (SportsEquipment item : equipment) {
+            if (item.getQuantity() <= LOW_STOCK_LIMIT) {
+                lowStockCount++;
+            }
+        }
+
+        System.out.println("\nКількість позицій з малою кількістю: " + lowStockCount);
+
+        // Виведення масиву до сортування
+        System.out.println("\n=== ДО СОРТУВАННЯ ===");
+
+        for (SportsEquipment item : equipment) {
+            System.out.println(item);
+        }
+
+        // Сортування за ціною від меншої до більшої
+        for (int i = 0; i < equipment.length - 1; i++) {
+
+            for (int j = 0; j < equipment.length - 1 - i; j++) {
+
+                if (equipment[j].getPrice() > equipment[j + 1].getPrice()) {
+
+                    SportsEquipment temp = equipment[j];
+                    equipment[j] = equipment[j + 1];
+                    equipment[j + 1] = temp;
+                }
+            }
+        }
+
+        // Виведення масиву після сортування
+        System.out.println("\n=== ПІСЛЯ СОРТУВАННЯ ЗА ЦІНОЮ ===");
+
+        for (SportsEquipment item : equipment) {
+            System.out.println(item);
+        }
+
+        // Пошук спортивного інвентарю
+        SportsEquipment searchItem = new SportsEquipment(
+                "Баскетбольний м'яч",
+                "М'ячі",
+                8,
+                750,
+                "Spalding");
+
+        boolean found = findEquipment(equipment, searchItem);
+
+        if (found) {
+            System.out.println("\nШуканий інвентар знайдено.");
+        } else {
+            System.out.println("\nШуканий інвентар не знайдено.");
+        }
+
+        scanner.close();
+    }
+
+    public static boolean findEquipment(
+            SportsEquipment[] equipment,
+            SportsEquipment searchItem) {
+
+        for (SportsEquipment item : equipment) {
+            if (item.equals(searchItem)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
+
