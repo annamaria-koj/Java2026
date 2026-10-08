@@ -11,7 +11,7 @@ public class Main {
 
         SportsEquipment[] equipment = new SportsEquipment[EQUIPMENT_COUNT];
 
-        // Заповнення масиву
+        
         for (int i = 0; i < equipment.length; i++) {
 
             System.out.println("\n=== Інвентар №" + (i + 1) + " ===");
@@ -33,7 +33,7 @@ public class Main {
             System.out.print("Введіть виробника: ");
             String manufacturer = scanner.nextLine();
 
-            equipment[i] = new SportsEquipment(
+            equipment[i] = new SportsEquipment( 
                     equipmentName,
                     equipmentCategory,
                     quantity,
@@ -41,35 +41,35 @@ public class Main {
                     manufacturer);
         }
 
-        // Виведення всього масиву
+    
         System.out.println("\n=== СПИСОК СПОРТИВНОГО ІНВЕНТАРЮ ===");
 
         for (SportsEquipment item : equipment) {
             System.out.println(item);
         }
 
-        // Підрахунок інвентарю, якого мало
+     
         int lowStockCount = 0;
 
         for (SportsEquipment item : equipment) {
-            if (item.getQuantity() <= LOW_STOCK_LIMIT) {
+            if (item.getQuantity() <= LOW_STOCK_LIMIT) {/*тут я перевіряю чи кількість поточного інвентарю менша або дорівнює втсановленій межі малої кількості */ 
                 lowStockCount++;
             }
         }
 
         System.out.println("\nКількість позицій з малою кількістю: " + lowStockCount);
 
-        // Виведення масиву до сортування
+  
         System.out.println("\n=== ДО СОРТУВАННЯ ===");
 
         for (SportsEquipment item : equipment) {
             System.out.println(item);
         }
 
-        // Сортування за ціною від меншої до більшої
-        for (int i = 0; i < equipment.length - 1; i++) {
 
-            for (int j = 0; j < equipment.length - 1 - i; j++) {
+        for (int i = 0; i < equipment.length - 1; i++) {/*Це зовнішній цикл Bubble Sort, який визначає кількість проходів по масиву. */
+
+            for (int j = 0; j < equipment.length - 1 - i; j++) {/* Це внутрішній цикл, який послідовно порівнює сусідні елементи масиву,*/
 
                 if (equipment[j].getPrice() > equipment[j + 1].getPrice()) {
 
@@ -80,14 +80,14 @@ public class Main {
             }
         }
 
-        // Виведення масиву після сортування
+       
         System.out.println("\n=== ПІСЛЯ СОРТУВАННЯ ЗА ЦІНОЮ ===");
 
         for (SportsEquipment item : equipment) {
             System.out.println(item);
-        }
+        }/*метод вивести */
 
-        // Пошук спортивного інвентарю
+    
         SportsEquipment searchItem = new SportsEquipment(
                 "Баскетбольний м'яч",
                 "М'ячі",
