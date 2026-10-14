@@ -3,12 +3,12 @@ import java.util.InputMismatchException;
 
 public class Main {
 
+    public static final int EQUIPMENT_COUNT = 5;
+    public static final int LOW_STOCK_LIMIT = 5;
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-
-        final int EQUIPMENT_COUNT = 5;
-        final int LOW_STOCK_LIMIT = 5;
 
         SportsEquipment[] equipment = new SportsEquipment[EQUIPMENT_COUNT];
 
@@ -90,15 +90,47 @@ public class Main {
             System.out.println(item);
         }
 
-        int lowStockCount = 0;
+        StockCheck[] checks = {
+                new LowStockCheck(),
+                new OutOfStockCheck()
+        };
 
-        for (SportsEquipment item : equipment) {
-            if (item.getQuantity() <= LOW_STOCK_LIMIT) {
-                lowStockCount++;
+        System.out.println("\n=== ПЕРЕВІРКА ЗАПАСІВ ===");
+
+        for (StockCheck check : checks) {
+            int count = 0;
+
+            for (SportsEquipment item : equipment) {
+                if (check.check(item)) {
+                    count++;
+                }
             }
+
+            Reportable report = (Reportable) check;
+
+            System.out.println(
+                    report.getReportName() + ": " + count);
         }
 
-        System.out.println("\nКількість позицій з малою кількістю: " + lowStockCount);
+        System.out.println("\n=== ПРИКЛАД РЕЗУЛЬТАТУ ПЕРЕВІРКИ ===");
+
+        AbstractStockCheck sampleCheck = new LowStockCheck();
+        sampleCheck.printResult(equipment[0]);
+
+        System.out.println("\n=== ПЕРЕВІРКА ПАТЕРНА STRATEGY ===");
+
+        StockChecker checker = new StockChecker(new LowStockCheck());
+
+        SportsEquipment strategyTestItem = equipment[0];
+
+        System.out.println("Товар: " + strategyTestItem);
+        System.out.println("Поточна стратегія: " + checker.getDescription());
+        System.out.println("Результат: " + checker.check(strategyTestItem));
+
+        checker.setStrategy(new OutOfStockCheck());
+
+        System.out.println("\nЗмінена стратегія: " + checker.getDescription());
+        System.out.println("Результат: " + checker.check(strategyTestItem));
 
         System.out.println("\n=== ДО СОРТУВАННЯ ===");
 
