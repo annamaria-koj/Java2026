@@ -91,8 +91,8 @@ public class Main {
         }
 
         StockCheck[] checks = {
-                new LowStockCheck(),
-                new OutOfStockCheck()
+                StockCheckFactory.createCheck("low"),
+                StockCheckFactory.createCheck("out")
         };
 
         System.out.println("\n=== ПЕРЕВІРКА ЗАПАСІВ ===");
@@ -234,6 +234,38 @@ public class Main {
                                 + e.getMessage());
             }
         }
+
+        System.out.println("\n=== ПЕРЕВІРКА ПАТЕРНА OBSERVER ===");
+
+        SportsEquipment demoItem = new SportsEquipment(
+                "Тестовий інвентар",
+                "Тест",
+                10,
+                100,
+                "Demo");
+
+        StockSubject subject = new StockSubject();
+
+        subject.addObserver(new LowStockObserver());
+        subject.addObserver(new StockLogObserver());
+
+        System.out.println("Змінюємо кількість тестового інвентарю...");
+        subject.changeQuantity(demoItem, 3);
+
+        System.out.println("\n=== ПЕРЕВІРКА ПАТЕРНА ADAPTER ===");
+
+        StockCheck adaptedCheck = new LegacyStockCheckAdapter(
+                new LegacyStockChecker());
+
+        SportsEquipment adapterTestItem = new SportsEquipment(
+                "Тестovий м'яч",
+                "М'ячі",
+                0,
+                500,
+                "Demo");
+
+        System.out.println("Перевірка: " + adaptedCheck.getDescription());
+        System.out.println("Результат: " + adaptedCheck.check(adapterTestItem));
 
         scanner.close();
     }
