@@ -1,4 +1,7 @@
-public class SportsEquipment {
+import java.util.Objects;
+
+public abstract sealed class SportsEquipment
+        permits CardioEquipment, StrengthEquipment {
 
     private String equipmentName;
     private String equipmentCategory;
@@ -6,14 +9,23 @@ public class SportsEquipment {
     private double price;
     private String manufacturer;
 
-    public SportsEquipment(String equipmentName, String equipmentCategory, int quantity, double price,
+    public SportsEquipment(
+            String equipmentName,
+            String equipmentCategory,
+            int quantity,
+            double price,
             String manufacturer) {
+
         this.equipmentName = equipmentName;
         this.equipmentCategory = equipmentCategory;
         this.quantity = quantity;
         this.price = price;
         this.manufacturer = manufacturer;
+
+        System.out.println("Конструктор SportsEquipment");
     }
+
+    public abstract String getEquipmentType();
 
     public int getQuantity() {
         return quantity;
@@ -27,13 +39,25 @@ public class SportsEquipment {
         return price;
     }
 
+    public String getEquipmentName() {
+        return equipmentName;
+    }
+
+    public String getEquipmentCategory() {
+        return equipmentCategory;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
     @Override
     public String toString() {
-        return "Назва: " + equipmentName +
-                ", Категорія: " + equipmentCategory +
-                ", Кількість: " + quantity +
-                ", Ціна: " + price +
-                ", Виробник: " + manufacturer;
+        return "Назва: " + equipmentName
+                + ", Категорія: " + equipmentCategory
+                + ", Кількість: " + quantity
+                + ", Ціна: " + price
+                + ", Виробник: " + manufacturer;
     }
 
     @Override
@@ -48,10 +72,20 @@ public class SportsEquipment {
 
         SportsEquipment other = (SportsEquipment) obj;
 
-        return equipmentName.equals(other.equipmentName)
-                && equipmentCategory.equals(other.equipmentCategory)
+        return Objects.equals(equipmentName, other.equipmentName)
+                && Objects.equals(equipmentCategory, other.equipmentCategory)
                 && quantity == other.quantity
                 && Double.compare(price, other.price) == 0
-                && manufacturer.equals(other.manufacturer);
+                && Objects.equals(manufacturer, other.manufacturer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                equipmentName,
+                equipmentCategory,
+                quantity,
+                price,
+                manufacturer);
     }
 }

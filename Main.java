@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.InputMismatchException;
 
 public class Main {
 
@@ -13,63 +12,142 @@ public class Main {
         SportsEquipment[] equipment = new SportsEquipment[EQUIPMENT_COUNT];
 
         for (int i = 0; i < equipment.length; i++) {
-
             System.out.println("\n=== Інвентар №" + (i + 1) + " ===");
 
-            System.out.print("Введіть назву інвентарю: ");
-            String equipmentName = scanner.nextLine();
+            int categoryType;
 
-            System.out.print("Введіть категорію інвентарю: ");
-            String equipmentCategory = scanner.nextLine();
+            do {
+                System.out.println("\nОберіть категорію обладнання:");
+                System.out.println("1 — Кардіообладнання");
+                System.out.println("2 — Силове обладнання");
+                System.out.print("Ваш вибір: ");
 
-            int quantity;
-            double price;
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Помилка: введіть число 1 або 2.");
+                    scanner.nextLine();
+                    System.out.print("Ваш вибір: ");
+                }
 
-            try {
-                System.out.print("Введіть кількість інвентарю: ");
-                quantity = scanner.nextInt();
-
-                System.out.print("Введіть ціну за одиницю: ");
-                price = scanner.nextDouble();
-
+                categoryType = scanner.nextInt();
                 scanner.nextLine();
 
-            } catch (InputMismatchException e) {
-                System.out.println("Помилка: кількість та ціна повинні бути числами.");
+                if (categoryType < 1 || categoryType > 2) {
+                    System.out.println("Такого варіанта немає. Спробуйте ще раз.");
+                }
+            } while (categoryType < 1 || categoryType > 2);
+
+            int equipmentType;
+            String equipmentName;
+            String equipmentCategory;
+            double maxSpeed = 0;
+            double maxIncline = 0;
+            double maxLoad = 0;
+
+            if (categoryType == 1) {
+                equipmentCategory = "Кардіообладнання";
+
+                do {
+                    System.out.println("\nОберіть вид кардіообладнання:");
+                    System.out.println("1 — Бігова доріжка");
+                    System.out.println("2 — Інший кардіотренажер");
+                    System.out.print("Ваш вибір: ");
+
+                    while (!scanner.hasNextInt()) {
+                        System.out.println("Помилка: введіть число 1 або 2.");
+                        scanner.nextLine();
+                        System.out.print("Ваш вибір: ");
+                    }
+
+                    equipmentType = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (equipmentType < 1 || equipmentType > 2) {
+                        System.out.println("Такого варіанта немає. Спробуйте ще раз.");
+                    }
+                } while (equipmentType < 1 || equipmentType > 2);
+
+                if (equipmentType == 1) {
+                    equipmentName = "Бігова доріжка";
+                } else {
+                    System.out.print("Введіть назву кардіотренажера: ");
+                    equipmentName = scanner.nextLine();
+                }
+
+                System.out.print("Введіть максимальну швидкість (км/год): ");
+                maxSpeed = scanner.nextDouble();
                 scanner.nextLine();
-                quantity = 0;
-                price = 0;
+
+                if (equipmentType == 1) {
+                    System.out.print("Введіть максимальний кут нахилу (градуси): ");
+                    maxIncline = scanner.nextDouble();
+                    scanner.nextLine();
+                }
+
+            } else {
+                equipmentCategory = "Силове обладнання";
+                equipmentType = 3;
+
+                System.out.print("Введіть назву силового обладнання: ");
+                equipmentName = scanner.nextLine();
+
+                System.out.print("Введіть максимальне навантаження (кг): ");
+                maxLoad = scanner.nextDouble();
+                scanner.nextLine();
             }
+
+            System.out.print("Введіть кількість інвентарю: ");
+            int quantity = scanner.nextInt();
+
+            System.out.print("Введіть ціну за одиницю: ");
+            double price = scanner.nextDouble();
+            scanner.nextLine();
 
             System.out.print("Введіть виробника: ");
             String manufacturer = scanner.nextLine();
 
-            try {
-                if (price < 0) {
+            while (price < 0) {
+                try {
                     throw new InvalidPriceException(
-                            "Ціна не може бути від'ємною.",
-                            price);
+                            "Ціна не може бути від'ємною.", price);
+
+                } catch (InvalidPriceException e) {
+                    System.out.println("Помилка: " + e.getMessage());
+                    System.out.println("Некоректна ціна: " + e.getInvalidPrice());
                 }
 
-                equipment[i] = new SportsEquipment(
+                System.out.print("Введіть правильну ціну (0 або більше): ");
+                price = scanner.nextDouble();
+                scanner.nextLine();
+            }
+
+            if (categoryType == 1 && equipmentType == 1) {
+                equipment[i] = new Treadmill(
                         equipmentName,
                         equipmentCategory,
                         quantity,
                         price,
-                        manufacturer);
+                        manufacturer,
+                        maxSpeed,
+                        maxIncline);
 
-            } catch (InvalidPriceException e) {
-                System.out.println("Помилка: " + e.getMessage());
-                System.out.println("Некоректна ціна: " + e.getInvalidPrice());
-
-                equipment[i] = new SportsEquipment(
+            } else if (categoryType == 1) {
+                equipment[i] = new CardioEquipment(
                         equipmentName,
                         equipmentCategory,
                         quantity,
-                        0,
-                        manufacturer);
-            }
+                        price,
+                        manufacturer,
+                        maxSpeed);
 
+            } else {
+                equipment[i] = new StrengthEquipment(
+                        equipmentName,
+                        equipmentCategory,
+                        quantity,
+                        price,
+                        manufacturer,
+                        maxLoad);
+            }
         }
 
         try {
@@ -89,6 +167,63 @@ public class Main {
         for (SportsEquipment item : equipment) {
             System.out.println(item);
         }
+
+        System.out.println("\n=== SWITCH З PATTERN MATCHING ===");
+
+        for (SportsEquipment item : equipment) {
+            String description = switch (item) {
+                case Treadmill t ->
+                    "Бігова доріжка, максимальна швидкість: "
+                            + t.getMaxSpeed()
+                            + ", максимальний нахил: "
+                            + t.getMaxIncline();
+
+                case CardioEquipment c ->
+                    "Кардіотренажер, максимальна швидкість: "
+                            + c.getMaxSpeed();
+
+                case StrengthEquipment s ->
+                    "Силове обладнання, максимальне навантаження: "
+                            + s.getMaxLoad();
+            };
+
+            System.out.println(description);
+        }
+
+        System.out.println("\n=== INSTANCEOF З PATTERN MATCHING ===");
+
+        for (SportsEquipment item : equipment) {
+            if (item instanceof Treadmill treadmill) {
+                System.out.println(
+                        "Бігова доріжка: " + treadmill.getEquipmentName()
+                                + ", кут нахилу: " + treadmill.getMaxIncline());
+
+            } else if (item instanceof CardioEquipment cardio) {
+                System.out.println(
+                        "Кардіотренажер: " + cardio.getEquipmentName()
+                                + ", швидкість: " + cardio.getMaxSpeed());
+
+            } else if (item instanceof StrengthEquipment strength) {
+                System.out.println(
+                        "Силове обладнання: " + strength.getEquipmentName()
+                                + ", навантаження: " + strength.getMaxLoad());
+            }
+        }
+
+        System.out.println("\n=== ПЕРЕВІРКА EQUALS ===");
+
+        SportsEquipment item1 = new Treadmill(
+                "Тестова доріжка", "Кардіообладнання",
+                5, 20000, "Test", 18, 10);
+
+        SportsEquipment item2 = new Treadmill(
+                "Тестова доріжка", "Кардіообладнання",
+                5, 20000, "Test", 18, 10);
+
+        System.out.println("item1.equals(item2): " + item1.equals(item2));
+        System.out.println("item2.equals(item1): " + item2.equals(item1));
+        System.out.println("Однакові hashCode: "
+                + (item1.hashCode() == item2.hashCode()));
 
         StockCheck[] checks = {
                 StockCheckFactory.createCheck("low"),
@@ -156,19 +291,17 @@ public class Main {
             System.out.println(item);
         } /* метод вивести */
 
-        SportsEquipment searchItem = new SportsEquipment(
-                "Баскетбольний м'яч",
-                "М'ячі",
-                8,
-                750,
-                "Spalding");
+        System.out.println("\n=== ПОШУК ІНВЕНТАРЮ ЗА НАЗВОЮ ===");
 
-        boolean found = findEquipment(equipment, searchItem);
+        System.out.print("Введіть назву інвентарю для пошуку: ");
+        String searchName = scanner.nextLine();
+
+        boolean found = findEquipment(equipment, searchName);
 
         if (found) {
-            System.out.println("\nШуканий інвентар знайдено.");
+            System.out.println("Шуканий інвентар знайдено.");
         } else {
-            System.out.println("\nШуканий інвентар не знайдено.");
+            System.out.println("Інвентар із такою назвою не знайдено.");
         }
 
         System.out.println("\n=== ПЕРЕВІРКА РІВНЯ 3 ===");
@@ -237,12 +370,13 @@ public class Main {
 
         System.out.println("\n=== ПЕРЕВІРКА ПАТЕРНА OBSERVER ===");
 
-        SportsEquipment demoItem = new SportsEquipment(
+        SportsEquipment demoItem = new StrengthEquipment(
                 "Тестовий інвентар",
                 "Тест",
                 10,
                 100,
-                "Demo");
+                "Demo",
+                50.0);
 
         StockSubject subject = new StockSubject();
 
@@ -257,12 +391,13 @@ public class Main {
         StockCheck adaptedCheck = new LegacyStockCheckAdapter(
                 new LegacyStockChecker());
 
-        SportsEquipment adapterTestItem = new SportsEquipment(
-                "Тестovий м'яч",
+        SportsEquipment adapterTestItem = new StrengthEquipment(
+                "Тестoвий м'яч",
                 "М'ячі",
                 0,
                 500,
-                "Demo");
+                "Demo",
+                0.0);
 
         System.out.println("Перевірка: " + adaptedCheck.getDescription());
         System.out.println("Результат: " + adaptedCheck.check(adapterTestItem));
@@ -272,10 +407,12 @@ public class Main {
 
     public static boolean findEquipment(
             SportsEquipment[] equipment,
-            SportsEquipment searchItem) {
+            String searchName) {
 
         for (SportsEquipment item : equipment) {
-            if (item.equals(searchItem)) {
+            if (item != null
+                    && item.getEquipmentName() != null
+                    && item.getEquipmentName().equalsIgnoreCase(searchName.trim())) {
                 return true;
             }
         }
