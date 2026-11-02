@@ -1,9 +1,13 @@
 import java.util.Scanner;
+import java.util.Collection;
+import java.util.Comparator;
 
 public class Main {
 
     public static final int EQUIPMENT_COUNT = 5;
     public static final int LOW_STOCK_LIMIT = 5;
+
+    private static long nextId = 1;
 
     public static void main(String[] args) {
 
@@ -120,8 +124,10 @@ public class Main {
                 scanner.nextLine();
             }
 
+            long id = nextId++;
             if (categoryType == 1 && equipmentType == 1) {
                 equipment[i] = new Treadmill(
+                        id,
                         equipmentName,
                         equipmentCategory,
                         quantity,
@@ -132,6 +138,7 @@ public class Main {
 
             } else if (categoryType == 1) {
                 equipment[i] = new CardioEquipment(
+                        id,
                         equipmentName,
                         equipmentCategory,
                         quantity,
@@ -141,6 +148,7 @@ public class Main {
 
             } else {
                 equipment[i] = new StrengthEquipment(
+                        id,
                         equipmentName,
                         equipmentCategory,
                         quantity,
@@ -213,10 +221,12 @@ public class Main {
         System.out.println("\n=== ПЕРЕВІРКА EQUALS ===");
 
         SportsEquipment item1 = new Treadmill(
+                100,
                 "Тестова доріжка", "Кардіообладнання",
                 5, 20000, "Test", 18, 10);
 
         SportsEquipment item2 = new Treadmill(
+                100,
                 "Тестова доріжка", "Кардіообладнання",
                 5, 20000, "Test", 18, 10);
 
@@ -371,12 +381,13 @@ public class Main {
         System.out.println("\n=== ПЕРЕВІРКА ПАТЕРНА OBSERVER ===");
 
         SportsEquipment demoItem = new StrengthEquipment(
-                "Тестовий інвентар",
-                "Тест",
-                10,
-                100,
-                "Demo",
-                50.0);
+        101,
+        "Тестовий інвентар",
+        "Тест",
+        10,
+        100,
+        "Demo",
+        50.0);
 
         StockSubject subject = new StockSubject();
 
@@ -392,15 +403,107 @@ public class Main {
                 new LegacyStockChecker());
 
         SportsEquipment adapterTestItem = new StrengthEquipment(
-                "Тестoвий м'яч",
-                "М'ячі",
-                0,
-                500,
-                "Demo",
-                0.0);
+        102,
+        "Тестoвий м'яч",
+        "М'ячі",
+        0,
+        500,
+        "Demo",
+        0.0);
 
         System.out.println("Перевірка: " + adaptedCheck.getDescription());
         System.out.println("Результат: " + adaptedCheck.check(adapterTestItem));
+
+        System.out.println("\n=== ПЕРЕВІРКА CRUD-СЕРВІСУ ===");
+
+        SportsEquipmentServiceImpl equipmentService = new SportsEquipmentServiceImpl();
+
+        // Додаємо три тестові об'єкти
+        equipmentService.save(new StrengthEquipment(
+                900, "Гантелі", "Силове обладнання",
+                10, 1500, "Demo", 30.0
+        ));
+
+        equipmentService.save(new StrengthEquipment(
+                901, "Гантелі", "Силове обладнання",
+                15, 1000, "Demo", 25.0
+        ));
+
+        equipmentService.save(new StrengthEquipment(
+                902, "Штанга", "Силове обладнання",
+                5, 2000, "Demo", 50.0
+        ));
+
+        System.out.println("Кількість після додавання: "
+                + equipmentService.count());
+
+        // Оновлюємо об'єкт з ID 901
+        SportsEquipment updatedItem = new StrengthEquipment(
+                901, "Гантелі", "Силове обладнання",
+                20, 1200, "Demo", 25.0
+        );
+
+        equipmentService.save(updatedItem);
+
+        System.out.println("Кількість після оновлення: "
+                + equipmentService.count());
+
+        // Пошук за ID
+        try {
+            SportsEquipment foundItem = equipmentService.findById(901);
+            System.out.println("Знайдений об'єкт: " + foundItem);
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Сортування за назвою та ціною
+        System.out.println("\n=== СОРТУВАННЯ ЗА НАЗВОЮ ТА ЦІНОЮ ===");
+
+        for (SportsEquipment item :
+                equipmentService.findAllSortedByNameAndByPrice()) {
+            System.out.println(item);
+        }
+
+        System.out.println("\n=== ПЕРЕВІРКА DEFAULT-МЕТОДУ ===");
+
+        System.out.println("Чи існує ID 901: "
+                + equipmentService.existsById(901));
+
+        System.out.println("Чи існує ID 999: "
+                + equipmentService.existsById(999));
+
+        System.out.println("\n=== ВИВЕДЕННЯ ВСІХ ОБ'ЄКТІВ ===");
+
+        EntityPrinter.printAll(
+                equipmentService.findAllSortedByNameAndByPrice());
+
+        System.out.println("\n=== УЗАГАЛЬНЕНЕ СОРТУВАННЯ ЗА ЦІНОЮ ===");
+
+        Collection<SportsEquipment> sortedByPrice =
+                equipmentService.findAllSorted(
+                        Comparator.comparingDouble(SportsEquipment::getPrice)
+                );
+
+        for (SportsEquipment item : sortedByPrice) {
+            System.out.println(item);
+        }
+
+        // Успішне видалення
+        try {
+            equipmentService.delete(902);
+            System.out.println("\nОб'єкт з ID 902 успішно видалено.");
+            System.out.println("Кількість після видалення: "
+                    + equipmentService.count());
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Перевірка помилки: такого ID не існує
+        try {
+            equipmentService.delete(999);
+        } catch (EntityNotFoundException e) {
+            System.out.println("\nОчікувана помилка: " + e.getMessage());
+        }
 
         scanner.close();
     }

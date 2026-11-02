@@ -1,20 +1,21 @@
-import java.util.Objects;
-
 public sealed class CardioEquipment extends SportsEquipment permits Treadmill {
 
     private double maxSpeed;
 
     public CardioEquipment(
-        String equipmentName,
-        String equipmentCategory,
-        int quantity,
-        double price,
-        String manufacturer) {
+            long id,
+            String equipmentName,
+            String equipmentCategory,
+            int quantity,
+            double price,
+            String manufacturer) {
 
-    this(equipmentName, equipmentCategory, quantity, price, manufacturer, 0.0);
-}
+        this(id, equipmentName, equipmentCategory, quantity, price,
+                manufacturer, 0.0);
+    }
 
     public CardioEquipment(
+            long id,
             String equipmentName,
             String equipmentCategory,
             int quantity,
@@ -23,6 +24,7 @@ public sealed class CardioEquipment extends SportsEquipment permits Treadmill {
             double maxSpeed) {
 
         super(
+                id,
                 equipmentName,
                 equipmentCategory,
                 quantity,
@@ -50,20 +52,5 @@ public sealed class CardioEquipment extends SportsEquipment permits Treadmill {
     public String toString() {
         return super.toString()
                 + ", Максимальна швидкість: " + maxSpeed;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        CardioEquipment other = (CardioEquipment) obj;
-        return Double.compare(maxSpeed, other.maxSpeed) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), maxSpeed);
     }
 }
