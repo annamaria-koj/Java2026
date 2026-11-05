@@ -1,10 +1,9 @@
-import java.util.Objects;
-
 public final class Treadmill extends CardioEquipment {
 
     private double maxIncline;
 
     public Treadmill(
+            long id,
             String equipmentName,
             String equipmentCategory,
             int quantity,
@@ -14,6 +13,7 @@ public final class Treadmill extends CardioEquipment {
             double maxIncline) {
 
         super(
+                id,
                 equipmentName,
                 equipmentCategory,
                 quantity,
@@ -43,20 +43,4 @@ public final class Treadmill extends CardioEquipment {
         return super.toString()
                 + ", Максимальний кут нахилу: " + maxIncline;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        Treadmill other = (Treadmill) obj;
-        return Double.compare(maxIncline, other.maxIncline) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), maxIncline);
-    }
-
 }

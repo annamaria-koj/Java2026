@@ -1,10 +1,9 @@
-import java.util.Objects;
-
 public final class StrengthEquipment extends SportsEquipment {
 
     private double maxLoad;
 
     public StrengthEquipment(
+            long id,
             String equipmentName,
             String equipmentCategory,
             int quantity,
@@ -13,6 +12,7 @@ public final class StrengthEquipment extends SportsEquipment {
             double maxLoad) {
 
         super(
+                id,
                 equipmentName,
                 equipmentCategory,
                 quantity,
@@ -39,20 +39,5 @@ public final class StrengthEquipment extends SportsEquipment {
     public String toString() {
         return super.toString()
                 + ", Максимальне навантаження: " + maxLoad;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        StrengthEquipment other = (StrengthEquipment) obj;
-        return Double.compare(maxLoad, other.maxLoad) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), maxLoad);
     }
 }

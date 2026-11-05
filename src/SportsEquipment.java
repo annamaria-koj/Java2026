@@ -1,22 +1,21 @@
-import java.util.Objects;
-
-public abstract sealed class SportsEquipment
+public abstract sealed class SportsEquipment extends BaseEntity
         permits CardioEquipment, StrengthEquipment {
 
-    private String equipmentName;
     private String equipmentCategory;
     private int quantity;
     private double price;
     private String manufacturer;
 
     public SportsEquipment(
+            long id,
             String equipmentName,
             String equipmentCategory,
             int quantity,
             double price,
             String manufacturer) {
 
-        this.equipmentName = equipmentName;
+        super(id, equipmentName);
+
         this.equipmentCategory = equipmentCategory;
         this.quantity = quantity;
         this.price = price;
@@ -40,7 +39,7 @@ public abstract sealed class SportsEquipment
     }
 
     public String getEquipmentName() {
-        return equipmentName;
+        return getName();
     }
 
     public String getEquipmentCategory() {
@@ -53,39 +52,11 @@ public abstract sealed class SportsEquipment
 
     @Override
     public String toString() {
-        return "Назва: " + equipmentName
+        return "ID: " + getId()
+                + ", Назва: " + getName()
                 + ", Категорія: " + equipmentCategory
                 + ", Кількість: " + quantity
                 + ", Ціна: " + price
                 + ", Виробник: " + manufacturer;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        SportsEquipment other = (SportsEquipment) obj;
-
-        return Objects.equals(equipmentName, other.equipmentName)
-                && Objects.equals(equipmentCategory, other.equipmentCategory)
-                && quantity == other.quantity
-                && Double.compare(price, other.price) == 0
-                && Objects.equals(manufacturer, other.manufacturer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                equipmentName,
-                equipmentCategory,
-                quantity,
-                price,
-                manufacturer);
     }
 }
