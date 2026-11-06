@@ -11,7 +11,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+    DBConnection.getInstance().initializeDatabase();
+
+    Scanner scanner = new Scanner(System.in);
 
         SportsEquipment[] equipment = new SportsEquipment[EQUIPMENT_COUNT];
 
@@ -416,7 +418,7 @@ public class Main {
 
         System.out.println("\n=== ПЕРЕВІРКА CRUD-СЕРВІСУ ===");
 
-        SportsEquipmentServiceImpl equipmentService = new SportsEquipmentServiceImpl();
+        SportsEquipmentService equipmentService = new JdbcSportsEquipmentService();
 
         // Додаємо три тестові об'єкти
         equipmentService.save(new StrengthEquipment(
