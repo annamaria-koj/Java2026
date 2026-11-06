@@ -1,7 +1,19 @@
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "equipment_suppliers")
 public class EquipmentSupplier extends BaseEntity {
 
+    @Column(name = "phone", length = 50)
     private String phone;
+
+    @Column(name = "email", unique = true, length = 255)
     private String email;
+
+    protected EquipmentSupplier() {
+    }
 
     public EquipmentSupplier(
             long id,
@@ -10,6 +22,16 @@ public class EquipmentSupplier extends BaseEntity {
             String email) {
 
         super(id, name);
+        this.phone = phone;
+        this.email = email;
+    }
+
+    public EquipmentSupplier(
+            String name,
+            String phone,
+            String email) {
+
+        super(0, name);
         this.phone = phone;
         this.email = email;
     }
