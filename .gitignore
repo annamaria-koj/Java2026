@@ -1,1 +1,27 @@
+# Maven
+target/
+
+# Database credentials
+src/main/resources/application.properties
+.env
+.env.*
+
+# Logs
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups
+*.bak
+*.backup
+
+# Compiled Java files
 *.class
+out/
