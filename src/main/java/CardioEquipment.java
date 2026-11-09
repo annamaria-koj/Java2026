@@ -1,6 +1,17 @@
-public sealed class CardioEquipment extends SportsEquipment permits Treadmill {
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import java.math.BigDecimal;
 
-    private double maxSpeed;
+@Entity
+@DiscriminatorValue("CARDIO")
+public class CardioEquipment extends SportsEquipment {
+
+    @Column(name = "max_speed", precision = 6, scale = 2)
+    private BigDecimal maxSpeed;
+
+    protected CardioEquipment() {
+    }
 
     public CardioEquipment(
             long id,
@@ -23,24 +34,18 @@ public sealed class CardioEquipment extends SportsEquipment permits Treadmill {
             String manufacturer,
             double maxSpeed) {
 
-        super(
-                id,
-                equipmentName,
-                equipmentCategory,
-                quantity,
-                price,
+        super(id, equipmentName, equipmentCategory, quantity, price,
                 manufacturer);
 
-        this.maxSpeed = maxSpeed;
-        System.out.println("Конструктор CardioEquipment");
+        this.maxSpeed = BigDecimal.valueOf(maxSpeed);
     }
 
     public double getMaxSpeed() {
-        return maxSpeed;
+        return maxSpeed.doubleValue();
     }
 
     public void setMaxSpeed(double maxSpeed) {
-        this.maxSpeed = maxSpeed;
+        this.maxSpeed = BigDecimal.valueOf(maxSpeed);
     }
 
     @Override

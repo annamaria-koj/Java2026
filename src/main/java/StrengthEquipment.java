@@ -1,6 +1,17 @@
-public final class StrengthEquipment extends SportsEquipment {
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import java.math.BigDecimal;
 
-    private double maxLoad;
+@Entity
+@DiscriminatorValue("STRENGTH")
+public class StrengthEquipment extends SportsEquipment {
+
+    @Column(name = "max_load", precision = 8, scale = 2)
+    private BigDecimal maxLoad;
+
+    protected StrengthEquipment() {
+    }
 
     public StrengthEquipment(
             long id,
@@ -19,15 +30,15 @@ public final class StrengthEquipment extends SportsEquipment {
                 price,
                 manufacturer);
 
-        this.maxLoad = maxLoad;
+        this.maxLoad = BigDecimal.valueOf(maxLoad);
     }
 
     public double getMaxLoad() {
-        return maxLoad;
+        return maxLoad.doubleValue();
     }
 
     public void setMaxLoad(double maxLoad) {
-        this.maxLoad = maxLoad;
+        this.maxLoad = BigDecimal.valueOf(maxLoad);
     }
 
     @Override

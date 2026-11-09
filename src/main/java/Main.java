@@ -11,9 +11,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-    DBConnection.getInstance().initializeDatabase();
+        DBConnection.getInstance().initializeDatabase();
 
-    Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         SportsEquipment[] equipment = new SportsEquipment[EQUIPMENT_COUNT];
 
@@ -195,6 +195,9 @@ public class Main {
                 case StrengthEquipment s ->
                     "Силове обладнання, максимальне навантаження: "
                             + s.getMaxLoad();
+
+                default ->
+                    "Невідомий тип спортивного обладнання";
             };
 
             System.out.println(description);
@@ -383,13 +386,13 @@ public class Main {
         System.out.println("\n=== ПЕРЕВІРКА ПАТЕРНА OBSERVER ===");
 
         SportsEquipment demoItem = new StrengthEquipment(
-        101,
-        "Тестовий інвентар",
-        "Тест",
-        10,
-        100,
-        "Demo",
-        50.0);
+                101,
+                "Тестовий інвентар",
+                "Тест",
+                10,
+                100,
+                "Demo",
+                50.0);
 
         StockSubject subject = new StockSubject();
 
@@ -405,13 +408,13 @@ public class Main {
                 new LegacyStockChecker());
 
         SportsEquipment adapterTestItem = new StrengthEquipment(
-        102,
-        "Тестoвий м'яч",
-        "М'ячі",
-        0,
-        500,
-        "Demo",
-        0.0);
+                102,
+                "Тестoвий м'яч",
+                "М'ячі",
+                0,
+                500,
+                "Demo",
+                0.0);
 
         System.out.println("Перевірка: " + adaptedCheck.getDescription());
         System.out.println("Результат: " + adaptedCheck.check(adapterTestItem));
@@ -423,18 +426,15 @@ public class Main {
         // Додаємо три тестові об'єкти
         equipmentService.save(new StrengthEquipment(
                 900, "Гантелі", "Силове обладнання",
-                10, 1500, "Demo", 30.0
-        ));
+                10, 1500, "Demo", 30.0));
 
         equipmentService.save(new StrengthEquipment(
                 901, "Гантелі", "Силове обладнання",
-                15, 1000, "Demo", 25.0
-        ));
+                15, 1000, "Demo", 25.0));
 
         equipmentService.save(new StrengthEquipment(
                 902, "Штанга", "Силове обладнання",
-                5, 2000, "Demo", 50.0
-        ));
+                5, 2000, "Demo", 50.0));
 
         System.out.println("Кількість після додавання: "
                 + equipmentService.count());
@@ -442,8 +442,7 @@ public class Main {
         // Оновлюємо об'єкт з ID 901
         SportsEquipment updatedItem = new StrengthEquipment(
                 901, "Гантелі", "Силове обладнання",
-                20, 1200, "Demo", 25.0
-        );
+                20, 1200, "Demo", 25.0);
 
         equipmentService.save(updatedItem);
 
@@ -461,8 +460,7 @@ public class Main {
         // Сортування за назвою та ціною
         System.out.println("\n=== СОРТУВАННЯ ЗА НАЗВОЮ ТА ЦІНОЮ ===");
 
-        for (SportsEquipment item :
-                equipmentService.findAllSortedByNameAndByPrice()) {
+        for (SportsEquipment item : equipmentService.findAllSortedByNameAndByPrice()) {
             System.out.println(item);
         }
 
@@ -481,10 +479,8 @@ public class Main {
 
         System.out.println("\n=== УЗАГАЛЬНЕНЕ СОРТУВАННЯ ЗА ЦІНОЮ ===");
 
-        Collection<SportsEquipment> sortedByPrice =
-                equipmentService.findAllSorted(
-                        Comparator.comparingDouble(SportsEquipment::getPrice)
-                );
+        Collection<SportsEquipment> sortedByPrice = equipmentService.findAllSorted(
+                Comparator.comparingDouble(SportsEquipment::getPrice));
 
         for (SportsEquipment item : sortedByPrice) {
             System.out.println(item);

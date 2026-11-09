@@ -1,6 +1,17 @@
-public final class Treadmill extends CardioEquipment {
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import java.math.BigDecimal;
 
-    private double maxIncline;
+@Entity
+@DiscriminatorValue("TREADMILL")
+public class Treadmill extends CardioEquipment {
+
+    @Column(name = "max_incline", precision = 5, scale = 2)
+    private BigDecimal maxIncline;
+
+    protected Treadmill() {
+    }
 
     public Treadmill(
             long id,
@@ -21,16 +32,16 @@ public final class Treadmill extends CardioEquipment {
                 manufacturer,
                 maxSpeed);
 
-        this.maxIncline = maxIncline;
+        this.maxIncline = BigDecimal.valueOf(maxIncline);
         System.out.println("Конструктор Treadmill");
     }
 
     public double getMaxIncline() {
-        return maxIncline;
+        return maxIncline.doubleValue();
     }
 
     public void setMaxIncline(double maxIncline) {
-        this.maxIncline = maxIncline;
+        this.maxIncline = BigDecimal.valueOf(maxIncline);
     }
 
     @Override

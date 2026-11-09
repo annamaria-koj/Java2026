@@ -1,16 +1,27 @@
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "equipment_suppliers")
 public class EquipmentSupplier extends BaseEntity {
 
-    @Column(name = "phone", length = 50)
+    @Column(name = "phone", length = 20)
     private String phone;
 
-    @Column(name = "email", unique = true, length = 255)
+    @Column(name = "email", unique = true, length = 100)
     private String email;
+
+    @OneToMany(
+            mappedBy = "supplier",
+            fetch = FetchType.LAZY
+    )
+    private List<SportsEquipment> equipment = new ArrayList<>();
 
     protected EquipmentSupplier() {
     }
@@ -50,6 +61,31 @@ public class EquipmentSupplier extends BaseEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<SportsEquipment> getEquipment() {
+        return equipment;
+    }
+
+    public void addEquipment(SportsEquipment item) {
+        if (item == null) {
+            return;
+        }
+
+        if (!equipment.contains(item)) {
+            equipment.add(item);
+            item.setSupplier(this);
+        }
+    }
+
+    public void removeEquipment(SportsEquipment item) {
+        if (item == null) {
+            return;
+        }
+
+        if (equipment.remove(item)) {
+            item.setSupplier(null);
+        }
     }
 
     @Override

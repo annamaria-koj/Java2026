@@ -1,5 +1,5 @@
 create table if not exists equipment_suppliers (
-    id bigint primary key,
+    id bigint primary key auto_increment,
     name varchar(100) not null,
     phone varchar(20),
     email varchar(100),
@@ -7,7 +7,7 @@ create table if not exists equipment_suppliers (
 );
 
 create table if not exists sports_equipment (
-    id bigint primary key,
+    id bigint primary key auto_increment,
     name varchar(100) not null,
     equipment_category varchar(100) not null,
     equipment_type varchar(50) not null,

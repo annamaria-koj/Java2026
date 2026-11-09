@@ -1,10 +1,39 @@
-public abstract sealed class SportsEquipment extends BaseEntity
-        permits CardioEquipment, StrengthEquipment {
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.math.BigDecimal;
 
+@Entity
+@Table(name = "sports_equipment")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "equipment_type", discriminatorType = DiscriminatorType.STRING, length = 50)
+public abstract class SportsEquipment extends BaseEntity {
+
+    @Column(name = "equipment_category", nullable = false, length = 100)
     private String equipmentCategory;
+
+    @Column(name = "quantity", nullable = false)
     private int quantity;
-    private double price;
+
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(name = "manufacturer", nullable = false, length = 100)
     private String manufacturer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id")
+    private EquipmentSupplier supplier;
+
+    protected SportsEquipment() {
+    }
 
     public SportsEquipment(
             long id,
@@ -18,7 +47,7 @@ public abstract sealed class SportsEquipment extends BaseEntity
 
         this.equipmentCategory = equipmentCategory;
         this.quantity = quantity;
-        this.price = price;
+        this.price = BigDecimal.valueOf(price);
         this.manufacturer = manufacturer;
 
         System.out.println("Конструктор SportsEquipment");
@@ -35,7 +64,7 @@ public abstract sealed class SportsEquipment extends BaseEntity
     }
 
     public double getPrice() {
-        return price;
+        return price.doubleValue();
     }
 
     public String getEquipmentName() {
@@ -48,6 +77,14 @@ public abstract sealed class SportsEquipment extends BaseEntity
 
     public String getManufacturer() {
         return manufacturer;
+    }
+
+    public EquipmentSupplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(EquipmentSupplier supplier) {
+        this.supplier = supplier;
     }
 
     @Override
